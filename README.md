@@ -9,6 +9,7 @@ Inspired by [locnh/docker-wordpress](https://github.com/locnh/docker-wordpress)
  - optional SSHD, can be started with extra environment keys. Default user `www-user`, no default password - re-generates if not set.
  - starts the extra HTTPS with fresh-generated ECC certificates (for speed).
  - expects to work behind CloudFlare - nginx has real_ip configured.
+ - ssmtp configured to send email via local [smtp-relay](https://github.com/namshi/docker-smtp)
 
 ### How to start
 

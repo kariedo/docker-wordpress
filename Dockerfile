@@ -11,8 +11,8 @@ RUN yum -y install http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
 # Enable Remi PHP 7.3
 RUN yum-config-manager --enable remi-php73
 
-# Install Supervisor, NginX, Apache, PHP and Extensions
-RUN yum -y install nginx supervisor openssh-server \
+# Install supervisor, nginx PHP-FPM and extensions
+RUN yum -y install nginx supervisor openssh-server ssmtp \
                     php \
                     php-bcmath \
                     php-cli \
@@ -39,6 +39,7 @@ COPY config/nginx/www.conf /etc/nginx/conf.d/default.conf
 
 # Add PHP-FPM configuration
 COPY config/php/www.conf /etc/php-fpm.d/www.conf
+COPY config/php/mail.ini /etc/php.d/mail.ini
 
 # Add Supervisor configuration
 COPY config/supervisor/nginx.ini /etc/supervisord.d/nginx.ini
@@ -58,6 +59,9 @@ RUN /usr/bin/ssh-keygen -A && \
     mkdir /run/php-fpm
 
 RUN groupadd www-user && adduser www-user -d /var/www/html -g www-user
+
+RUN sed -i -e 's/mailhub=mail/mailhub=smtp-relay/' \
+    /etc/ssmtp/ssmtp.conf
 
 EXPOSE 80
 EXPOSE 443
