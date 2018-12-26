@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Init setup
+sed -i 's/^memory_limit.*$/memory_limit = 768M/g' /etc/php.ini
+sed -i 's/^max_execution_time.*$/max_execution_time = 18000/g' /etc/php.ini
+
+if [ -z "$SSH_PASS" ];
+then
+    SSH_PASS=`head -c 10 /dev/random | base64`
+fi
+
+if [[ $SSHD == 1 ]];
+then
+    ln -s /etc/supervisord.d/sshd.ini.template /etc/supervisord.d/sshd.ini
+fi
+
+echo "www-user:$SSH_PASS" | chpasswd
+
+exec /usr/bin/supervisord -n -c /etc/supervisord.conf
